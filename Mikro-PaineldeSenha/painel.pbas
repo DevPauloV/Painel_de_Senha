@@ -1,0 +1,139 @@
+program painel
+
+
+dim seleciona, incrementaA, incrementaB, Guiche as integer
+dim BC1, BG, BAB as boolean
+dim dezena   as integer
+dim unidade  as integer
+
+main:
+TRISA=%11111111
+  TRISB=%00000000
+    TRISC=%00000000
+      INTCON=%00000000
+       ANSEL=%00000000
+         ANSELH=%00000000
+
+PORTC=0
+PORTB=0
+
+seleciona = 1
+incrementaA = 0
+incrementaB = 0
+Guiche = 1
+dezena = 0
+unidade = 0
+BAB = false
+BC1 = false
+BG = false
+
+executa:
+'-------------------------------------------------------------------------------
+        ' Seleciona A.
+      if PORTA.1 = 1 then
+         if BAB = false then
+            BAB = true
+            inc(seleciona)
+            if seleciona > 2 then seleciona = 1 end if
+          end if
+      end if
+         ' Seleciona B.
+      if PORTA.1 = 0 then
+         BAB = false
+      end if
+ '------------------------------------------------------------------------------
+       ' Incrementa A.
+        if seleciona = 1 then
+          if PORTA.0 = 1 then
+           if BC1 = false then
+              BC1 = true
+              inc(incrementaA)
+              if incrementaA > 99 then incrementaA=0 end if
+           end if
+          end if
+          if PORTA.0 = 0 then
+            BC1 = false
+          end if
+        end if
+'-------------------------------------------------------------------------------
+        ' Incrementa B.
+        if seleciona = 2 then
+          if PORTA.0 = 1 then
+           if BC1 = false then
+              BC1 = true
+              inc(incrementaB)
+              if incrementaB > 99 then incrementaB=0 end if
+           end if
+          end if
+          if PORTA.0 = 0 then
+            BC1 = false
+          end if
+        end if
+'-------------------------------------------------------------------------------
+         ' Guiche.
+        if PORTA.3 = 1 then
+           if BG = false then
+              BG = true
+              inc(Guiche)
+              if Guiche > 4 then Guiche=1 end if
+           end if
+          end if
+          if PORTA.3 = 0 then
+            BG = false
+          end if
+'-------------------------------------------------------------------------------
+
+       ' R E S E T
+        if PORTA.3 = 1 then
+           incrementaA = 0
+           seleciona = 1
+           incrementaB = 0
+           Guiche = 1
+           BAB = false
+           BC1 = false
+           BG = false
+           PORTB.4 = 1
+           PORTB.5 = 1
+           PORTB.6 = 0
+        end if
+'-----------------------------------------------------------------------------
+
+      gosub mostra
+      goto executa
+      mostra:
+
+'-------------------------------------------------------------------------------
+       if seleciona = 1 then
+          dezena= incrementaA div 10
+          unidade= incrementaA - (dezena*10)
+          PORTB.4 = 1
+          PORTB.5 = 1
+          PORTB.6 = 0
+       end if
+'-------------------------------------------------------------------------------
+       if seleciona = 2 then
+          dezena= incrementaB div 10
+          unidade= incrementaB - (dezena*10)
+          PORTB.4 = 0
+          PORTB.5 = 0
+          PORTB.6 = 1
+       end if
+
+'-------------------------------------------------------------------------------
+       PORTC = dezena
+       PORTC.4 = 1  PORTC.5 = 0   PORTC.6 = 0 PORTC.7 = 0
+       delay_ms(5)
+
+'-------------------------------------------------------------------------------
+       PORTC = unidade
+       PORTC.4 = 0  PORTC.5 = 1   PORTC.6 = 0 PORTC.7 = 0
+       delay_ms(5)
+
+'-------------------------------------------------------------------------------
+       PORTC = Guiche
+       PORTC.4 = 0  PORTC.5 = 0   PORTC.6 = 1 PORTC.7 = 0
+       delay_ms(5)
+
+'-------------------------------------------------------------------------------
+       return
+end.
