@@ -3,6 +3,7 @@ Projeto feito com PIC16f690 e 4511 para simular um painel de senha de hospital.
 
 
  Neste projeto deve-se desenvolver um painel de senhas para atendimento de pessoas em uma empresa.
+ </br>
              O painel deverá mostrar senhas de atendimento de 0 a 99 para letras A e E, deverá ser mostrado também o número do guichê ao qual o cliente deverá se dirigir.
              O controle deverá ser feito através de sinais de entrada no microcontrolador através de botões:
 •	Controle de senha:
